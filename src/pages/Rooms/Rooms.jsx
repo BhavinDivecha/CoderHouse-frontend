@@ -78,6 +78,7 @@ import { getAllRooms } from '../../http';
 const Rooms = () => {
     const [showModal, setShowModal] = useState(false);
     const [rooms, setRooms] = useState([]);
+    const [searchInput,SetSearchInput] =useState("");
 
     useEffect(() => {
         const fetchRooms = async () => {
@@ -97,7 +98,9 @@ const Rooms = () => {
                         <span className={styles.heading}>All voice rooms</span>
                         <div className={styles.searchBox}>
                             <img src="/images/search-icon.png" alt="search" />
-                            <input type="text" className={styles.searchInput} />
+                            <input type="text" className={styles.searchInput} onChange={(e)=>{
+SetSearchInput(e.target.value);
+                            }} />
                         </div>
                     </div>
                     <div className={styles.right}>
@@ -116,7 +119,7 @@ const Rooms = () => {
 
                 <div className={styles.roomList}>
                     {rooms.map((room) => (
-                        <RoomCard key={room.id} room={room} />
+                        room.topic.includes(searchInput)?<RoomCard key={room.id} room={room} />:null
                     ))}
                 </div>
             </div>

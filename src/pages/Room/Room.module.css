@@ -118,3 +118,106 @@
 
 .micImg {
 }
+
+/* Bottom bar styles */
+.bottomBar {
+    position: absolute;
+    bottom: 10%; /* Adjust this percentage to position it as desired */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #000000; /* Set the background color to your preference */
+    width: 35%; /* Adjust the width of the bottom bar as needed */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow here */
+    border-radius: 20px; /* Rounded corners */
+}
+
+/* Custom styles for the microphone source dropdown */
+.micSourceDropdown {
+    flex: 1; /* Expand to fill available space in the middle */
+    display: flex;
+    align-items: center;
+    padding: 0 0px;
+    margin: 0px 50px;
+    border: 1px solid #ccc; /* Add border for the dropdown for better visibility */
+    border-radius: 5px;
+    background-color: #3b3b3b;
+    color: #fff;
+    position: relative;
+}
+
+.micSourceDropdown select {
+    width: 100%; /* Make the select element take up the full width of the container */
+    border: none;
+    background-color: transparent; /* Remove default dropdown background */
+    cursor: pointer;
+    padding: 5px;
+    color: #fff;
+}
+
+.micSourceDropdown select:focus {
+    outline: none;
+}
+
+/* Style the dropdown arrow */
+.micSourceDropdown::after {
+    /* content: '\25BC'; Unicode for a downward-pointing arrow */
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none; /* Ensure the arrow doesn't interfere with select clicks */
+    font-size: 12px;
+    color: #ffffff; /* Arrow color */
+}
+
+.micSourceDropdown select option {
+    background-color: #fff; /* Option background color */
+    color: #ffffff; /* Option text color */
+}
+
+.bottomBarButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: rgb(76, 76, 76);
+}
+
+.leaveButton {
+    background-color: transparent; /* Red background color for the "Leave" button */
+   
+    color: rgb(255, 255, 255); /* Text color for the "Leave" button */
+    border: 1px solid #ff0000; /* Add border for the dropdown for better visibility */
+    padding: 10px 20px;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+/* Style for the chat button */
+.chatButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+
+.chatButton img {
+    width: 30px;
+    height: 30px;
+    /* Add other styling properties as needed to match the palm button */
+}

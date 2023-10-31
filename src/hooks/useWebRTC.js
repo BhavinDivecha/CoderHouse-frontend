@@ -11,6 +11,14 @@ export const useWebRTC = (roomId, user) => {
     const socket = useRef(null);
     const localMediaStream = useRef(null);
     const clientsRef = useRef(null);
+    const chatMessages = useRef([]); // Store chat messages
+    const [message, setMessage] = useState(''); // Input for new messages
+    const [chat_Messages, setChat_Message] = useState([]); // Input for new messages
+
+     // New state for screen sharing
+     const [isScreenSharing, setIsScreenSharing] = useState(false);
+     const screenSharingStream = useRef(null);
+
 
     const addNewClient = useCallback(
         (newClient, cb) => {
@@ -31,6 +39,9 @@ export const useWebRTC = (roomId, user) => {
     useEffect(() => {
         clientsRef.current = clients;
     }, [clients]);
+    useEffect(() => {
+        // chatMessages = chatMessages;
+    }, [chatMessages]);
 
     useEffect(() => {
         const initChat = async () => {
@@ -51,6 +62,11 @@ export const useWebRTC = (roomId, user) => {
             socket.current.on(ACTIONS.REMOVE_PEER, handleRemovePeer);
             socket.current.on(ACTIONS.ICE_CANDIDATE, handleIceCandidate);
             socket.current.on(ACTIONS.SESSION_DESCRIPTION, setRemoteMedia);
+            // Listen for incoming chat messages
+            socket.current.on(ACTIONS.CHAT_MESSAGE, ({ message }) => {
+                console.log(message);
+                handleSendMassage(message);
+            });
             socket.current.on(ACTIONS.MUTE, ({ peerId, userId }) => {
                 handleSetMute(true, userId);
             });
@@ -204,6 +220,10 @@ export const useWebRTC = (roomId, user) => {
                     setClients(allConnectedClients);
                 }
             }
+            async function handleSendMassage(message) {
+                chatMessages.current.push(message);
+                setChat_Message((prevChatMessages) => [...prevChatMessages, message]);
+            }
         };
 
         initChat();
@@ -223,6 +243,7 @@ export const useWebRTC = (roomId, user) => {
             socket.current.off(ACTIONS.SESSION_DESCRIPTION);
             socket.current.off(ACTIONS.MUTE);
             socket.current.off(ACTIONS.UNMUTE);
+            socket.current.off(ACTIONS.CHAT_MESSAGE);
         };
     }, []);
 
@@ -257,9 +278,42 @@ export const useWebRTC = (roomId, user) => {
         }
     };
 
+    const sendMessage = (message,userId) => {
+        const timestamp = new Date().toISOString();
+        const chatMessage = {
+            user: user.name,
+            message,
+            timestamp,
+            userId:userId
+        };
+
+        let settled = false;
+        chatMessages.current.push(chatMessage);
+        setChat_Message((prevChatMessages) => [...prevChatMessages, chatMessage]);
+        if (userId === user.id) {
+            let interval = setInterval(() => {
+                socket.current.emit(ACTIONS.CHAT_MESSAGE, {
+                    roomId,
+                    message: chatMessage,
+                });
+                    settled = true;
+                if (settled) {
+                    clearInterval(interval);
+                }
+            }, 200);
+        }
+        
+        // Broadcast the message to other users
+       
+    };
     return {
         clients,
         provideRef,
         handleMute,
+        chatMessages: chat_Messages, // Add chat messages to the returned object
+        message,
+        setMessage,
+        chat_Messages:chatMessages.current,
+        sendMessage, // Add the sendMessage function to the returned object
     };
 };
